@@ -1,0 +1,333 @@
+{
+  "receiveTime": "2026-06-27 12:40:56.925",
+  "specimenId": "9085",
+  "patientId": "000",
+  "patientName": "",
+  "sampleType": "\u672A\u6307\u5B9A",
+  "sampleSource": "\u6CE8\u5C04\u5668",
+  "bedNo": "",
+  "department": "",
+  "testTime": "2026-06-25 10:46:48",
+  "results": [
+    {
+      "testCode": "pH",
+      "testName": "pH",
+      "value": 7.474,
+      "rawValue": "7.474",
+      "unit": "",
+      "flag": "H",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "pCO2",
+      "testName": "pCO2",
+      "value": 36.3,
+      "rawValue": "36.3",
+      "unit": "mmHg",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "pO2",
+      "testName": "pO2",
+      "value": 72.2,
+      "rawValue": "72.2",
+      "unit": "mmHg",
+      "flag": "L",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "K\u002B",
+      "testName": "K\u002B",
+      "value": 3.7,
+      "rawValue": "3.7",
+      "unit": "mmol/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "Na\u002B",
+      "testName": "Na\u002B",
+      "value": 142,
+      "rawValue": "142",
+      "unit": "mmol/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "Ca\u002B\u002B",
+      "testName": "Ca\u002B\u002B",
+      "value": 1.07,
+      "rawValue": "1.07",
+      "unit": "mmol/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "Cl-",
+      "testName": "Cl-",
+      "value": 106,
+      "rawValue": "106",
+      "unit": "mmol/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "Glu",
+      "testName": "Glu",
+      "value": 8.8,
+      "rawValue": "8.8",
+      "unit": "mmol/L",
+      "flag": "H",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "Lac",
+      "testName": "Lac",
+      "value": 1,
+      "rawValue": "1.0",
+      "unit": "mmol/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "tHb",
+      "testName": "tHb",
+      "value": 135,
+      "rawValue": "135",
+      "unit": "g/L",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "RHb",
+      "testName": "RHb",
+      "value": 4.8,
+      "rawValue": "4.8",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "O2Hb",
+      "testName": "O2Hb",
+      "value": 94,
+      "rawValue": "94.0",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "sO2",
+      "testName": "sO2",
+      "value": 95.1,
+      "rawValue": "95.1",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "COHb",
+      "testName": "COHb",
+      "value": 1.2,
+      "rawValue": "1.2",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "MetHb",
+      "testName": "MetHb",
+      "value": 0,
+      "rawValue": "0.0",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "HbF",
+      "testName": "HbF",
+      "value": 43,
+      "rawValue": "43",
+      "unit": "%",
+      "flag": "N",
+      "range": "",
+      "resultType": "M"
+    },
+    {
+      "testCode": "T",
+      "testName": "T",
+      "value": 37,
+      "rawValue": "37.0",
+      "unit": "Cel",
+      "flag": "",
+      "range": "",
+      "resultType": "I"
+    },
+    {
+      "testCode": "FIO2",
+      "testName": "FIO2",
+      "value": 21,
+      "rawValue": "21.0",
+      "unit": "%",
+      "flag": "",
+      "range": "",
+      "resultType": "I"
+    },
+    {
+      "testCode": "HCO3-",
+      "testName": "HCO3-",
+      "value": 26.6,
+      "rawValue": "26.6",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "ABE",
+      "testName": "ABE",
+      "value": 3.1,
+      "rawValue": "3.1",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "SBC",
+      "testName": "SBC",
+      "value": 27.1,
+      "rawValue": "27.1",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "tCO2(P)",
+      "testName": "tCO2(P)",
+      "value": 62.2,
+      "rawValue": "62.2",
+      "unit": "Vol%",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "tCO2(B)",
+      "testName": "tCO2(B)",
+      "value": 52.9,
+      "rawValue": "52.9",
+      "unit": "Vol%",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "Hct",
+      "testName": "Hct",
+      "value": 41.4,
+      "rawValue": "41.4",
+      "unit": "%",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "p50(act)",
+      "testName": "p50(act)",
+      "value": 24.68,
+      "rawValue": "24.68",
+      "unit": "mmHg",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "p50(st)",
+      "testName": "p50(st)",
+      "value": 30.62,
+      "rawValue": "30.62",
+      "unit": "mmHg",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "tO2",
+      "testName": "tO2",
+      "value": 17.9,
+      "rawValue": "17.9",
+      "unit": "Vol%",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "Anion gap (K\u002B)",
+      "testName": "Anion gap (K\u002B)",
+      "value": 13.5,
+      "rawValue": "13.5",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "Anion gap",
+      "testName": "Anion gap",
+      "value": 9.8,
+      "rawValue": "9.8",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "mOsm",
+      "testName": "mOsm",
+      "value": 293.6,
+      "rawValue": "293.6",
+      "unit": "mmol/kg",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "SBE",
+      "testName": "SBE",
+      "value": 3,
+      "rawValue": "3.0",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    },
+    {
+      "testCode": "cBase(Ecf,ox)",
+      "testName": "cBase(Ecf,ox)",
+      "value": 3,
+      "rawValue": "3.0",
+      "unit": "mmol/L",
+      "flag": "",
+      "range": "",
+      "resultType": "C"
+    }
+  ]
+}

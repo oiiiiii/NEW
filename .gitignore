@@ -1,0 +1,38 @@
+# Visual Studio 缓存、配置
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 编译输出目录
+*/bin/
+*/obj/
+x64/
+x86/
+AnyCPU/
+
+# WPF 设计器缓存
+*.cache
+*.csproj.user
+
+# 发布输出
+Publish/
+publish/
+
+# NuGet 包
+packages/
+*.nupkg
+
+# 日志
+*.log
+
+# VS Code（如果你用vscode打开）
+.vscode/
+
+# Rider
+.idea/
+
+# 临时文件
+*.tmp
+*.bak
