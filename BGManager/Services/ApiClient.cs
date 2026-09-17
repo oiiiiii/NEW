@@ -286,6 +286,7 @@ public class ApiClient
     /// <param name="snapshotDepartment">快照科室</param>
     /// <param name="snapshotGender">快照性别</param>
     /// <param name="snapshotSampleType">快照样本类型</param>
+    /// <param name="snapshotRemark">快照备注</param>
     /// <param name="auditUser">审核用户，默认system</param>
     /// <returns>审核成功返回true，否则false</returns>
     public async Task<bool> AuditSpecimenWithSnapshotAsync(long id,
@@ -296,6 +297,7 @@ public class ApiClient
         string snapshotDepartment,
         string snapshotGender,
         string snapshotSampleType,
+        string snapshotRemark,
         string auditUser = "system")
     {
         var request = new
@@ -307,6 +309,7 @@ public class ApiClient
             snapshotDepartment,
             snapshotGender,
             snapshotSampleType,
+            snapshotRemark,
             auditUser
         };
 

@@ -107,6 +107,7 @@ public static class SpecimenEndpoints
                 req.SnapshotDepartment ?? "",
                 req.SnapshotGender ?? "",
                 req.SnapshotSampleType ?? "",
+                req.SnapshotRemark ?? "",
                 req.AuditUser ?? "system");
         }
         else
@@ -252,6 +253,11 @@ public class AuditSpecimenRequest
     /// 快照样本类型
     /// </summary>
     public string? SnapshotSampleType { get; set; }
+
+    /// <summary>
+    /// 快照备注（审核时保存，不可再修改）
+    /// </summary>
+    public string? SnapshotRemark { get; set; }
 
     /// <summary>
     /// 审核用户，默认system

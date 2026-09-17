@@ -83,12 +83,13 @@ public interface ISpecimenRepository
     /// <param name="snapshotDepartment">快照科室</param>
     /// <param name="snapshotGender">快照性别</param>
     /// <param name="snapshotSampleType">快照样本类型</param>
+    /// <param name="snapshotRemark">快照备注</param>
     /// <param name="auditUser">审核用户，默认system</param>
     /// <returns>成功返回true，否则false</returns>
     bool AuditWithSnapshot(long id,
         string snapshotPatientName, string snapshotBedNo, string snapshotPatientId,
         string snapshotNameAbbreviation, string snapshotDepartment, string snapshotGender,
-        string snapshotSampleType, string auditUser = "system");
+        string snapshotSampleType, string snapshotRemark, string auditUser = "system");
 
     /// <summary>
     /// 取消审核（恢复为待审核状态）

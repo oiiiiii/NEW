@@ -163,7 +163,7 @@ public class PrintTemplateSettingsForm : Form
         
         chkShowFooter.Checked = _currentTemplate.ShowFooter;
         txtFooterLeft.Text = _currentTemplate.FooterLeft;
-        txtFooterRight.Text = _currentTemplate.FooterRight;
+        txtFooterRight.Text = "（由标本备注自动填充，不可预设）";
         SetNumericUpDownValue(numFooterFontSize, (decimal)_currentTemplate.FooterFontSize);
         SetNumericUpDownValue(numFooterSpacing, (decimal)_currentTemplate.FooterSpacing);
     }
@@ -218,7 +218,7 @@ public class PrintTemplateSettingsForm : Form
         
         _currentTemplate.ShowFooter = chkShowFooter.Checked;
         _currentTemplate.FooterLeft = txtFooterLeft.Text;
-        _currentTemplate.FooterRight = txtFooterRight.Text;
+        _currentTemplate.FooterRight = ""; // 右侧内容由标本备注自动填充，模板不再保存预设值
         _currentTemplate.FooterFontSize = (float)numFooterFontSize.Value;
         _currentTemplate.FooterSpacing = (float)numFooterSpacing.Value;
     }
@@ -650,9 +650,14 @@ public class PrintTemplateSettingsForm : Form
         layout.Controls.Add(txtFooterLeft, 1, layout.RowCount - 1);
         
         AddLabel(layout, "右侧内容:");
+        var rightPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(0, 5, 0, 5) };
         txtFooterRight.Width = 300;
+        txtFooterRight.ReadOnly = true;
+        txtFooterRight.BackColor = Color.FromArgb(245, 245, 245);
+        txtFooterRight.Text = "（由标本备注自动填充，不可预设）";
         txtFooterRight.TextChanged += (s, e) => MarkUnsaved();
-        layout.Controls.Add(txtFooterRight, 1, layout.RowCount - 1);
+        rightPanel.Controls.Add(txtFooterRight);
+        layout.Controls.Add(rightPanel, 1, layout.RowCount - 1);
         
         AddLabel(layout, "字号:");
         AddNumericUpDown(layout, 8, 24, numFooterFontSize, true);

@@ -239,6 +239,7 @@ public class SpecimenRepository : ISpecimenRepository
         string snapshotDepartment,
         string snapshotGender,
         string snapshotSampleType,
+        string snapshotRemark,
         string auditUser = "system")
     {
         using var conn = DbConnectionFactory.CreateConnection();
@@ -255,6 +256,7 @@ public class SpecimenRepository : ISpecimenRepository
                 snapshot_department = @snapshotDept,
                 snapshot_gender = @snapshotGender,
                 snapshot_sample_type = @snapshotSampleType,
+                snapshot_remark = @snapshotRemark,
                 updated_at = @updatedAt
             WHERE id = @id AND status != @status;";
 
@@ -268,6 +270,7 @@ public class SpecimenRepository : ISpecimenRepository
         cmd.Parameters.AddWithValue("@snapshotDept", snapshotDepartment);
         cmd.Parameters.AddWithValue("@snapshotGender", snapshotGender);
         cmd.Parameters.AddWithValue("@snapshotSampleType", snapshotSampleType);
+        cmd.Parameters.AddWithValue("@snapshotRemark", snapshotRemark ?? string.Empty);
         cmd.Parameters.AddWithValue("@updatedAt", DateTime.Now);
         cmd.Parameters.AddWithValue("@id", id);
 
@@ -290,6 +293,7 @@ public class SpecimenRepository : ISpecimenRepository
                 snapshot_department = '',
                 snapshot_gender = '',
                 snapshot_sample_type = '',
+                snapshot_remark = '',
                 updated_at = @updatedAt
             WHERE id = @id AND status = @auditedStatus;";
 
@@ -484,6 +488,9 @@ public class SpecimenRepository : ISpecimenRepository
                     break;
                 case "snapshot_sample_type":
                     spec.SnapshotSampleType = reader.GetString(i);
+                    break;
+                case "snapshot_remark":
+                    spec.SnapshotRemark = reader.GetString(i);
                     break;
             }
         }

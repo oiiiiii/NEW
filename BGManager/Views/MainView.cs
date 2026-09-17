@@ -13,6 +13,8 @@ public class MainView : UserControl
     private Specimen? _currentSpecimen;
     private List<Specimen> _historicalSpecimens = new();
     private DateTime _selectedDate = DateTime.Today;
+    private readonly Dictionary<long, Patient> _matchedPatients = new();
+    private List<Patient> _patientCache = new();
 
     private Form? _toastForm;
     private System.Windows.Forms.Timer? _toastTimer;
@@ -41,6 +43,7 @@ public class MainView : UserControl
     private TextBox txtReportTime;
     private TextBox txtSpecimenNo;
     private ComboBox cboSampleType;
+    private TextBox txtRemark;
 
     private DataGridView dgvResults;
     private Button btnAbnormalOnly;
@@ -239,8 +242,9 @@ public class MainView : UserControl
             ColumnCount = 2,
             Padding = new Padding(5)
         };
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 9; i++)
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 42f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80f));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
         group.Controls.Add(layout);
@@ -255,6 +259,24 @@ public class MainView : UserControl
         AddLabeledTextBox(layout, "报告时间:", out txtReportTime, row++, true);
         AddLabeledTextBox(layout, "样本号:", out txtSpecimenNo, row++, true);
         AddLabeledComboBox(layout, "样本类型:", out cboSampleType, row++, new[] { "未指定", "动脉", "静脉", "混合静脉" });
+
+        var remarkLabel = new Label
+        {
+            Text = "备注:",
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.TopRight,
+            Font = new Font("微软雅黑", 10f)
+        };
+        layout.Controls.Add(remarkLabel, 0, row);
+        txtRemark = new TextBox
+        {
+            Dock = DockStyle.Fill,
+            Font = new Font("微软雅黑", 10f),
+            Multiline = true,
+            ScrollBars = ScrollBars.Vertical,
+            BackColor = Color.White
+        };
+        layout.Controls.Add(txtRemark, 1, row);
     }
 
     private static void AddLabeledTextBox(TableLayoutPanel layout, string label, out TextBox textBox, int row, bool readOnly = false)
@@ -514,7 +536,11 @@ public class MainView : UserControl
                 sortDesc: true);
 
             _specimens = result.Items;
+            await MatchPatientsForSpecimensAsync();
             BindSpecimenList();
+            // 默认选中第一项并自动填充患者信息，无需用户点击
+            if (_specimens.Count > 0 && lstSpecimens.SelectedIndex >= 0)
+                await ShowSelectedDetail();
             StatsUpdated?.Invoke(this, EventArgs.Empty);
 
             string status = _selectedDate.Date == DateTime.Today
@@ -546,6 +572,7 @@ public class MainView : UserControl
                           (result.Items.Count > 0 && _specimens.Count > 0 && result.Items[0].Id > _specimens[0].Id);
 
             _specimens = result.Items;
+            await MatchPatientsForSpecimensAsync();
             BindSpecimenList();
             StatsUpdated?.Invoke(this, EventArgs.Empty);
 
@@ -556,6 +583,60 @@ public class MainView : UserControl
     }
 
     private bool _suppressSelectionChanged = false;
+
+    private async Task MatchPatientsForSpecimensAsync()
+    {
+        _matchedPatients.Clear();
+        if (_specimens.Count == 0) return;
+
+        try
+        {
+            _patientCache = await _api.GetPatientsAsync(onlyActive: true);
+        }
+        catch
+        {
+            _patientCache = new List<Patient>();
+            return;
+        }
+
+        if (_patientCache.Count == 0) return;
+
+        foreach (var s in _specimens)
+        {
+            if (s.Status != SpecimenStatus.Pending) continue;
+
+            string matchKey = !string.IsNullOrEmpty(s.OriginalPatientId)
+                ? s.OriginalPatientId
+                : s.PatientId;
+            if (string.IsNullOrWhiteSpace(matchKey)) continue;
+
+            Patient? matched = null;
+            var key = matchKey.Trim();
+
+            // 优先匹配床位号
+            matched = _patientCache.FirstOrDefault(p =>
+                !string.IsNullOrEmpty(p.BedNo) &&
+                p.BedNo.Equals(key, StringComparison.OrdinalIgnoreCase));
+            // 其次匹配姓名缩写
+            matched ??= _patientCache.FirstOrDefault(p =>
+                !string.IsNullOrEmpty(p.NameAbbreviation) &&
+                p.NameAbbreviation.Equals(key, StringComparison.OrdinalIgnoreCase));
+            // 最后匹配病案号
+            matched ??= _patientCache.FirstOrDefault(p =>
+                p.PatientId.Equals(key, StringComparison.OrdinalIgnoreCase));
+
+            if (matched != null)
+            {
+                _matchedPatients[s.Id] = matched;
+                // 同步更新内存中的展示字段，使列表面板直接显示匹配到的患者信息
+                s.PatientName = matched.PatientName;
+                if (!string.IsNullOrEmpty(matched.BedNo)) s.BedNo = matched.BedNo;
+                s.PatientId = matched.PatientId;
+                if (!string.IsNullOrEmpty(matched.Gender)) s.Gender = matched.Gender;
+                if (!string.IsNullOrEmpty(matched.Department)) s.Department = matched.Department;
+            }
+        }
+    }
 
     private void BindSpecimenList()
     {
@@ -615,15 +696,22 @@ public class MainView : UserControl
             cboGender.SelectedItem = string.IsNullOrEmpty(s.SnapshotGender) ? "" : s.SnapshotGender;
             txtDepartment.Text = s.SnapshotDepartment;
             cboSampleType.SelectedItem = s.SnapshotSampleType;
+            txtRemark.Text = s.SnapshotRemark ?? "";
         }
         else
         {
             Patient? matchedPatient = null;
-            if (!string.IsNullOrEmpty(originalId))
+            if (_matchedPatients.TryGetValue(s.Id, out var cached))
+            {
+                matchedPatient = cached;
+            }
+            else if (!string.IsNullOrEmpty(originalId))
             {
                 try
                 {
                     matchedPatient = await _api.FindPatientAsync(originalId);
+                    if (matchedPatient != null)
+                        _matchedPatients[s.Id] = matchedPatient;
                 }
                 catch
                 {
@@ -650,6 +738,7 @@ public class MainView : UserControl
                 txtDepartment.Text = s.Department;
             }
             cboSampleType.SelectedItem = s.SampleType;
+            txtRemark.Text = s.Remark ?? "";
         }
 
         txtReportTime.Text = s.TestTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-";
@@ -676,6 +765,8 @@ public class MainView : UserControl
         txtDepartment.BackColor = editable ? Color.White : Color.FromArgb(245, 245, 245);
         cboGender.Enabled = editable;
         cboSampleType.Enabled = editable;
+        txtRemark.ReadOnly = !editable;
+        txtRemark.BackColor = editable ? Color.White : Color.FromArgb(245, 245, 245);
     }
 
     private void UpdateAuditButton()
@@ -1042,6 +1133,7 @@ public class MainView : UserControl
             string snapshotDepartment = txtDepartment.Text.Trim();
             string snapshotGender = cboGender.SelectedItem?.ToString() ?? "";
             string snapshotSampleType = cboSampleType.SelectedItem?.ToString() ?? "未指定";
+            string snapshotRemark = txtRemark.Text.Trim();
 
             bool ok = await _api.AuditSpecimenWithSnapshotAsync(
                 _currentSpecimen.Id,
@@ -1051,7 +1143,8 @@ public class MainView : UserControl
                 snapshotNameAbbr,
                 snapshotDepartment,
                 snapshotGender,
-                snapshotSampleType);
+                snapshotSampleType,
+                snapshotRemark);
 
             if (ok)
             {
@@ -1377,10 +1470,14 @@ public class MainView : UserControl
         {
             var footerFont = SimSunFontHelper.CreateFont(template.FooterFontSize);
             g.DrawString(template.FooterLeft, footerFont, Brushes.Black, left, y);
-            if (!string.IsNullOrEmpty(template.FooterRight))
+            // 右侧内容由标本备注自动填充（已审核取快照，未审核取当前值），不再使用模板预设
+            string rightContent = specimen.Status == SpecimenStatus.Audited
+                ? (specimen.SnapshotRemark ?? "")
+                : (specimen.Remark ?? "");
+            if (!string.IsNullOrEmpty(rightContent))
             {
-                var rightSize = g.MeasureString(template.FooterRight, footerFont);
-                g.DrawString(template.FooterRight, footerFont, Brushes.Black, left + width - rightSize.Width, y);
+                var rightSize = g.MeasureString(rightContent, footerFont);
+                g.DrawString(rightContent, footerFont, Brushes.Black, left + width - rightSize.Width, y);
             }
         }
     }

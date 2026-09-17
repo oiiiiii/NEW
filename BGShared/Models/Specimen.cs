@@ -30,6 +30,7 @@ public class Specimen
     public string SnapshotDepartment { get; set; } = "";
     public string SnapshotGender { get; set; } = "";
     public string SnapshotSampleType { get; set; } = "";
+    public string SnapshotRemark { get; set; } = "";
 
     public List<TestResult> Results { get; set; } = new();
 }

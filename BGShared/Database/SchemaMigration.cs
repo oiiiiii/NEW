@@ -4,7 +4,7 @@ namespace BGShared.Database;
 
 public static class SchemaMigration
 {
-    private const int CurrentVersion = 4;
+    private const int CurrentVersion = 5;
 
     public static void EnsureSchema(SqliteConnection conn)
     {
@@ -67,6 +67,7 @@ public static class SchemaMigration
             2 => MigrationV2(),
             3 => MigrationV3(),
             4 => MigrationV4(),
+            5 => MigrationV5(),
             _ => throw new NotSupportedException($"Unknown migration version: {version}")
         };
     }
@@ -222,6 +223,13 @@ CREATE INDEX IF NOT EXISTS idx_patients_name_abbreviation ON patients(name_abbre
 
 CREATE INDEX IF NOT EXISTS idx_system_logs_created ON system_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_system_logs_level ON system_logs(level);
+";
+    }
+
+    private static string MigrationV5()
+    {
+        return @"
+ALTER TABLE specimens ADD COLUMN snapshot_remark TEXT DEFAULT '';
 ";
     }
 }

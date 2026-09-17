@@ -68,6 +68,7 @@ public static class DbColumns
     public const string SnapshotDepartment = "snapshot_department";
     public const string SnapshotGender = "snapshot_gender";
     public const string SnapshotSampleType = "snapshot_sample_type";
+    public const string SnapshotRemark = "snapshot_remark";
     
     public const string NameAbbreviation = "name_abbreviation";
     public const string Age = "age";

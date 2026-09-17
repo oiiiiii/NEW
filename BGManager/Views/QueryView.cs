@@ -882,10 +882,14 @@ public class QueryView : UserControl
         {
             var footerFont = SimSunFontHelper.CreateFont(template.FooterFontSize);
             g.DrawString(template.FooterLeft, footerFont, Brushes.Black, left, y);
-            if (!string.IsNullOrEmpty(template.FooterRight))
+            // 右侧内容由标本备注自动填充（已审核取快照，未审核取当前值），不再使用模板预设
+            string rightContent = specimen.Status == SpecimenStatus.Audited
+                ? (specimen.SnapshotRemark ?? "")
+                : (specimen.Remark ?? "");
+            if (!string.IsNullOrEmpty(rightContent))
             {
-                var rightSize = g.MeasureString(template.FooterRight, footerFont);
-                g.DrawString(template.FooterRight, footerFont, Brushes.Black, left + width - rightSize.Width, y);
+                var rightSize = g.MeasureString(rightContent, footerFont);
+                g.DrawString(rightContent, footerFont, Brushes.Black, left + width - rightSize.Width, y);
             }
         }
     }
