@@ -11,6 +11,7 @@
 x64/
 x86/
 AnyCPU/
+dist/
 
 # WPF 设计器缓存
 *.cache
@@ -36,3 +37,4 @@ packages/
 # 临时文件
 *.tmp
 *.bak
+bloodgas.db

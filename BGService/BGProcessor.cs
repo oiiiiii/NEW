@@ -13,6 +13,7 @@ public class BGProcessor
     private readonly ISpecimenRepository _specimenRepo;
     private readonly ISystemLogRepository _logRepo;
     private readonly IServiceStatusRepository _statusRepo;
+    private readonly IPatientRepository _patientRepo;
     private readonly MessageArchiver _archiver;
 
     public event Action<string>? OnLog;
@@ -23,11 +24,13 @@ public class BGProcessor
     public BGProcessor(SerialPortSettings serialSettings, string archivePath,
         ISpecimenRepository specimenRepo,
         ISystemLogRepository logRepo,
-        IServiceStatusRepository statusRepo)
+        IServiceStatusRepository statusRepo,
+        IPatientRepository patientRepo)
     {
         _specimenRepo = specimenRepo;
         _logRepo = logRepo;
         _statusRepo = statusRepo;
+        _patientRepo = patientRepo;
 
         _serialPort = new SerialPortService(serialSettings);
         _serialPort.OnLog += msg => OnLog?.Invoke(msg);
@@ -99,6 +102,8 @@ public class BGProcessor
             string archivePath = _archiver.SaveMessage(parsed, message, rawBytes);
 
             var specimen = MapToSpecimen(parsed, archivePath);
+            // 自动匹配患者管理中的患者数据
+            TryMatchPatient(specimen);
             _specimenRepo.Insert(specimen);
 
             _statusRepo.Update(s =>
@@ -110,7 +115,7 @@ public class BGProcessor
                 s.LastError = "";
             });
 
-            Log($"新标本入库: {parsed.SpecimenNo} (患者: {parsed.PatientId} {parsed.PatientName}, 结果数: {parsed.Results.Count})");
+            Log($"新标本入库: {parsed.SpecimenNo} (患者: {specimen.PatientId} {specimen.PatientName}, 结果数: {parsed.Results.Count})");
 
             var fullSpecimen = _specimenRepo.GetBySpecimenId(parsed.SpecimenNo);
             if (fullSpecimen != null)
@@ -189,6 +194,36 @@ public class BGProcessor
     {
         OnLog?.Invoke(msg);
         _logRepo.Add("INFO", "service", msg);
+    }
+
+    /// <summary>
+    /// 根据仪器发送的患者标识自动匹配患者管理中的患者数据。
+    /// 匹配优先级：床位号 → 姓名缩写 → 病案号
+    /// </summary>
+    private void TryMatchPatient(Specimen specimen)
+    {
+        string matchKey = !string.IsNullOrEmpty(specimen.OriginalPatientId)
+            ? specimen.OriginalPatientId
+            : specimen.PatientId;
+        if (string.IsNullOrWhiteSpace(matchKey)) return;
+
+        try
+        {
+            var patient = _patientRepo.FindByIdOrBedNoOrName(matchKey.Trim());
+            if (patient == null) return;
+
+            specimen.PatientId = patient.PatientId;
+            if (!string.IsNullOrEmpty(patient.PatientName)) specimen.PatientName = patient.PatientName;
+            if (!string.IsNullOrEmpty(patient.BedNo)) specimen.BedNo = patient.BedNo;
+            if (!string.IsNullOrEmpty(patient.Gender)) specimen.Gender = patient.Gender;
+            if (!string.IsNullOrEmpty(patient.Department)) specimen.Department = patient.Department;
+
+            Log($"标本 {specimen.SpecimenNo} 自动匹配患者: {patient.PatientName} (床号:{patient.BedNo})");
+        }
+        catch (Exception ex)
+        {
+            LogError("自动匹配患者失败", ex);
+        }
     }
 
     private void LogError(string msg, Exception ex)

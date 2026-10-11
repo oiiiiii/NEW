@@ -91,8 +91,8 @@ builder.Services.AddSingleton(sp =>
         archivePath,
         sp.GetRequiredService<ISpecimenRepository>(),
         sp.GetRequiredService<ISystemLogRepository>(),
-        sp.GetRequiredService<IServiceStatusRepository>()
-    );
+        sp.GetRequiredService<IServiceStatusRepository>(),
+        sp.GetRequiredService<IPatientRepository>());
 });
 
 TrayApplicationContext? trayContext = null;
